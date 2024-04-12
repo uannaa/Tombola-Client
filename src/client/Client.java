@@ -64,7 +64,8 @@ public class Client {
         }
     }
     
-    public void ricevi() throws IOException {
+    public void ricevi(int[][] cartella) throws IOException {
+        
         
         while (true) {
             
@@ -72,11 +73,19 @@ public class Client {
             
             if (estratto == -1) {
                 
+                System.err.println("Il server e' stato chiuso.");
                 break;
                 
+            } else {
+                
+                System.out.println("Estratto: " + estratto);
+                controlla(estratto, cartella, true);
+            
             }
             
-            System.out.println("Estratto: " + estratto);
+
+            
+
             
         }
         
@@ -88,12 +97,108 @@ public class Client {
         Client c = new Client();
         c.connetti();
 
-        int cartella[][] = new int[3][9];
-
-        CreaCartella(cartella);
+        int cartella[][] = CreaCartella();
         print(cartella);
         c.conferma();
-        c.ricevi();
+        c.ricevi(cartella);
+        
+    }
+    
+    /**
+     * 
+     * @param estratto
+     * @param cartella 
+     * @param check True se il controllo avviene sulla cartella, False se avviene sul tabellone
+     * 
+     */
+    
+    
+    public void controlla(int estratto, int cartella[][], boolean check) throws IOException {
+        
+        
+        
+        //status[0]:Ambo - status[1]:Terno - status[2]:Quaterna  - status[3]:Cinquina - status[4]:Tombola
+        boolean status[] = null;
+        
+        //controllo sulla cartella
+        if (check == true) {
+            
+            status[0] = false;
+            status[1] = false;
+            status[2] = false;
+            status[3] = false;
+            status[4] = false;
+            
+            int contatore = 0;
+            
+            for (int i = 0; i < cartella.length; i++) {
+
+                for (int j = 0; j < cartella[i].length; j++) {
+
+                    if (cartella[i][j] == estratto) {
+
+                        cartella[i][j] = 91;
+
+                    }
+
+                }
+
+            }
+            print(cartella);
+
+            for (int i = 0; i < cartella.length; i++) {
+
+                contatore = 0;
+
+                for (int j = 0; j < cartella[i].length; j++) {
+
+                    if (cartella[i][j] == 91) {
+
+                        contatore++;
+
+                    }
+
+                }
+
+                if (contatore >= 2) {
+                
+                    if (status[0] == false && contatore == 2) {
+
+                        System.out.print("Hai fatto ambo!" + "\n");
+                        status[0] = true;
+                        out.writeBoolean(status[0]);
+
+                    } else if (status[1] == false && contatore == 3) {
+
+                        System.out.print("Hai fatto terno!" + "\n");
+                        status[1] = true;
+                        out.writeBoolean(status[1]);
+
+                    } else if (status[2] == false && contatore == 4) {
+
+                        System.out.print("Hai fatto quaterna !" + "\n");
+                        status[2] = true;
+                        out.writeBoolean(status[2]);
+
+                    } else if (status[3] == false && contatore == 5) {
+
+                        System.out.print("Hai fatto cinquina!" + "\n");
+                        status[3] = true;
+                        out.writeBoolean(status[3]);
+
+                    }
+                    
+                }
+
+            }
+            
+        }
+        //controllo sul tabellone
+        else if (check == false) {
+            
+            
+            
+        }
         
     }
 
@@ -206,10 +311,12 @@ public class Client {
     }
     
         //metodi utili nel main
-    public static void CreaCartella(int cartella[][]) {
+    public static int[][] CreaCartella() {
 
         Random rand = new Random();
-
+        
+        int cartella[][] = new int[3][9];
+        
         int max = 0;
         int min = 0;
 
@@ -233,7 +340,7 @@ public class Client {
         ordinaMatrice(cartella);
         spaziVuoti(cartella);
 
-
+        return cartella;
 
     }
     
