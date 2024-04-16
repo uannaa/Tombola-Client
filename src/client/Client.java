@@ -13,7 +13,13 @@ import java.util.*;
  * @author paolo
  */
 public class Client {
-
+    
+    private boolean status[];
+    
+    private int contatore91 = 0;
+    private int contatore = 0;
+    public boolean[] punto = {false, false, false, false, false};
+    
     Socket mioSocket = null;
     int porta = 6789;
 
@@ -79,12 +85,73 @@ public class Client {
             } else {
                 
                 System.out.println("Estratto: " + estratto);
-                controlla(estratto, cartella, true);
+                
+                for (int i = 0; i < cartella.length; i++) {
+                    
+                    for (int j = 0; j < cartella[i].length; j++) {
+                        
+                        if (cartella[i][j] == estratto) {
+                            
+                            cartella[i][j] = 91;
+                            
+                            System.out.println();
+                            print(cartella);
+                            contatore91++;
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+                for (int i = 0; i < cartella.length; i++) {
+                    
+                    contatore = 0;
+                    
+                    for (int j = 0; j < cartella[i].length; j++) {
+                        
+                        if (cartella[i][j] == 91) {
+                            
+                            contatore++;
+                            
+                        }
+                        
+                    }
+                    
+                    if (contatore >= 2) {
+                        
+                        if (punto[0] == false && contatore == 2) {
+                            
+                            System.out.println("Hai fatto ambo!");
+                            out.writeBytes("Il client ha fatto ambo!");
+                            punto[0] = true;
+                            
+                        } else if (punto[1] == false && contatore == 3) {
+                            
+                            System.out.println("Hai fatto terno!");
+                            out.writeBytes("Il client ha fatto terno!");
+                            punto[1] = true;
+                            
+                        } else if (punto[2] == false && contatore == 4) {
+                            
+                            System.out.println("Hai fatto quaterna!");
+                            out.writeBytes("Il client ha fatto quaterna!");
+                            punto[2] = true;
+                            
+                        } else if (punto[3] == false && contatore == 5) {
+                            
+                            System.out.println("Hai fatto cinquina!");
+                            out.writeBytes("Il client ha fatto cinquina!");
+                            punto[3] = true;
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
             
             }
-            
-
-            
 
             
         }
@@ -118,7 +185,6 @@ public class Client {
         
         
         //status[0]:Ambo - status[1]:Terno - status[2]:Quaterna  - status[3]:Cinquina - status[4]:Tombola
-        boolean status[] = null;
         
         //controllo sulla cartella
         if (check == true) {
